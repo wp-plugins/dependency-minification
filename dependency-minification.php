@@ -2,7 +2,7 @@
 /*
 Plugin Name: Dependency Minification
 Description: Concatenates and minifies scripts and stylesheets.
-Version: 0.9.2
+Version: 0.9.3
 Author: X-Team
 Author URI: http://x-team.com/
 Text Domain: depmin
@@ -728,6 +728,10 @@ class Dependency_Minification {
 			unset($extra['suffix']);
 			unset($extra['rtl']);
 			unset($extra['data']);
+			// Default scripts are not assigned 'group', so we use the original 'deps->args' value
+			if ( is_a( $wp_deps, 'WP_Scripts' ) && empty( $extra['group'] ) && is_int( $dep->args ) ) {
+				$extra['group'] = $dep->args;
+			}
 			ksort($extra);
 			$key = serialize($extra);
 			$bundles[$key][] = $handle;
