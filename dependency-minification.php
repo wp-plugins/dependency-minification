@@ -1,13 +1,32 @@
 <?php
-/*
-Plugin Name: Dependency Minification
-Description: Concatenates and minifies scripts and stylesheets.
-Version: 0.9.5
-Author: X-Team
-Author URI: http://x-team.com/
-Text Domain: depmin
-*/
+/**
+ * Plugin Name: Dependency Minification
+ * Description: Concatenates and minifies scripts and stylesheets. Please install and activate <a href="http://scribu.net" target="_blank">scribu</a>'s <a href="http://wordpress.org/plugins/proper-network-activation/" target="_blank">Proper Network Activation</a> plugin <em>before</em> activating this plugin <em>network-wide</em>.
+ * Version: 0.9.6
+ * Author: X-Team
+ * Author URI: http://x-team.com/wordpress/
+ * Text Domain: depmin
+ * License: GPLv2+
+ * Domain Path: /languages
+ */
 
+/**
+ * Copyright (c) 2013 X-Team (http://x-team.com/)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2 or, at
+ * your discretion, any later version, as published by the Free
+ * Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 class Dependency_Minification {
 	static $options = array();
@@ -68,13 +87,23 @@ class Dependency_Minification {
 		self::add_rewrite_rule();
 	}
 
+	static function get_rewrite_regex() {
+		return sprintf( '^%s/%s', self::$options['endpoint'], self::FILENAME_PATTERN );
+	}
+
 	static function add_rewrite_rule() {
-		$regex = sprintf( '^%s/%s', self::$options['endpoint'], self::FILENAME_PATTERN );
+		$regex    = self::get_rewrite_regex();
 		$redirect = 'index.php?';
 		for ( $i = 0; $i < count( self::$query_vars ); $i += 1 ) {
 			$redirect .= sprintf( '%s=$matches[%d]&', self::$query_vars[$i], $i + 1 );
 		}
 		add_rewrite_rule( $regex, $redirect, 'top' );
+	}
+
+	static function remove_rewrite_rule() {
+		$regex = self::get_rewrite_regex();
+		global $wp_rewrite;
+		unset( $wp_rewrite->extra_rules_top[ $regex ] );
 	}
 
 	protected static $is_footer = array(
@@ -95,6 +124,7 @@ class Dependency_Minification {
 	 * register_deactivation_hook
 	 */
 	static function deactivate() {
+		self::remove_rewrite_rule();
 		flush_rewrite_rules();
 	}
 
