@@ -1,5 +1,5 @@
 === Dependency Minification ===
-Contributors:      X-team, westonruter, fjarrett, kucrut, shadyvb, alex-ye, c3mdigital, lkraav
+Contributors:      xwp, westonruter, fjarrett, kucrut, shadyvb, alex-ye, c3mdigital, lkraav
 Tags:              performance, dependencies, minify, concatenate, compress, js, javascript, scripts, css, styles, stylesheets, gzip, yslow, pagespeed, caching
 Tested up to:      3.8
 Requires at least: 3.5
